@@ -1,0 +1,194 @@
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+  <div class="row card-form">
+    <div class="col-lg-12 col-md-12 card-group-row__col">
+      <div class="card card-group-row__card">
+        <div class="card-header card-header-large bg-light d-flex align-items-center">
+          <div class="flex">
+            <h4 class="card-header__title">Form Lokasi</h4>
+            <p id="notice"><%= notice %></p>
+
+          </div>
+        </div>
+        <div class="card-body d-flex align-items-center card-form__body">
+          <%= form_with(model: location, local: true) do |form| %>
+            <% if location.errors.any? %>
+              <div id="error_explanation">
+                <h2><%= pluralize(location.errors.count, "error") %> prohibited this location from being saved:</h2>
+
+                <ul>
+                <% location.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+                </ul>
+              </div>
+            <% end %>
+            <div class="form-group">
+              <%= form.label :nama_lokasi %>
+              <%= form.text_field :name , :class=>"form-control", :required=> true %>
+            </div>
+
+            <div class="form-row">
+              <div class="col-12 col-md-9 mb-3">
+                <%= form.label :cari_lokasi %>
+                <input type="text" name="cari_alamat" class="form-control cari_alamat">
+              </div>
+              <div class="col-12 col-md-3 mb-3">
+                <%= link_to 'Search', "javascript:;" ,:class=>"btn btn-secondary", :style=>"position: absolute;bottom: 0;", :id=>"search_input" , :onclick=>"cari_alamat($('.cari_alamat').val())" %>
+              </div>
+            </div>
+
+              <style>
+                /* Set the size of the div element that contains the map */
+                #map {
+                  height: 400px;  /* The height is 400 pixels */
+                  width: 100%;  /* The width is the width of the web page */
+                 }
+
+              </style>
+            <div class="form-group" id="map"></div>
+            <div class="form-row">
+              <div class="col-12 col-md-6 mb-3">
+                <%= form.label :latitude %>
+                <%= form.text_field :latitude , :class=>"form-control", :required=> true %>
+              </div>
+
+              <div class="col-12 col-md-6 mb-3">
+                <%= form.label :longitude %>
+                <%= form.text_field :longitude , :class=>"form-control", :required=> true %>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :url_google %>
+              <%= form.text_field :url , :class=>"form-control", :required=> true %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label "Luas Lahan (HA)" %>
+              <%= form.text_field :land_area, :class=>"form-control", :required=> true %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label "nomor iup / op" %>
+              <%= form.text_field :iup_number, :class=>"form-control", :required=> true %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label "nomor iup / opk" %>
+              <%= form.text_field :opk_number, :class=>"form-control", :required=> true %>
+            </div>
+
+            <div class="form-group">
+              <%= form.submit "Save", :class=>"btn btn-primary" %>
+              <%= link_to 'Back', locations_path ,:class=>"btn btn-secondary"%>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<script>
+  // Initialize and add the map
+  var awal_lat = "-6.2087634";
+  var awal_lng = "106.845599";
+  if ("<%= params[:action] %>" != 'new'){
+    awal_lat = "<%= location.latitude %>";
+    awal_lng = "<%= location.longitude %>";
+  }
+  function cari_alamat(search_value) {
+    map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 12,
+    });
+    const request = {
+      query: search_value,
+      fields: ["name", "geometry"],
+    };
+    service = new google.maps.places.PlacesService(map);
+    service.findPlaceFromQuery(request, (results, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (let i = 0; i < results.length; i++) {
+          initMap(results[i].geometry.location.lat(),results[i].geometry.location.lng());
+        }
+        map.setCenter(results[0].geometry.location);
+      }
+    });
+  }
+
+  function initMap(latt,lngg) {
+    if (latt) {
+      var tengah = new google.maps.LatLng(latt,lngg);
+      $("#location_latitude").val(latt);
+      $("#location_longitude").val(lngg);
+      convertDMS(latt,lngg)
+    }else{
+      var tengah = new google.maps.LatLng(awal_lat,awal_lng);
+      $("#location_latitude").val(awal_lat);
+      $("#location_longitude").val(awal_lng);
+      convertDMS(awal_lat,awal_lng)
+    }
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        center: tengah,
+        mapTypeId: 'roadmap'
+    });
+
+    var myMarker = new google.maps.Marker({
+        position: tengah,
+        draggable: false,
+        map: map
+    });
+
+    
+
+    google.maps.event.addListener(myMarker, 'dragend', function () {
+      map.setCenter(this.getPosition()); // Set map center to marker position
+      // updatePosition(this.getPosition().lat(), this.getPosition().lng()); // update position display
+    });
+
+    google.maps.event.addListener(map, 'drag', function () {
+        myMarker.setPosition(this.getCenter()); // set marker position to map center
+        // updatePosition(this.getCenter().lat(), this.getCenter().lng()); // update position display
+    });
+
+    google.maps.event.addListener(map, 'dragend', function () {
+        myMarker.setPosition(this.getCenter()); // set marker position to map center
+        $("#location_latitude").val(this.getCenter().lat());
+        $("#location_longitude").val(this.getCenter().lng());
+
+        convertDMS(this.getCenter().lat(),this.getCenter().lng())
+        // updatePosition(this.getCenter().lat(), this.getCenter().lng()); // update position display
+    });
+  }
+
+  function toDegreesMinutesAndSeconds(coordinate) {
+    var absolute = Math.abs(coordinate);
+    var degrees = Math.floor(absolute);
+    var minutesNotTruncated = (absolute - degrees) * 60;
+    var minutes = Math.floor(minutesNotTruncated);
+    var seconds = Math.floor((minutesNotTruncated - minutes) * 60);
+
+    return degrees + "°" + minutes + "'" + seconds;
+  }
+
+  function convertDMS(lat, lng) {
+    var latitude = toDegreesMinutesAndSeconds(lat);
+    var latitudeCardinal = lat >= 0 ? "N" : "S";
+
+    var longitude = toDegreesMinutesAndSeconds(lng);
+    var longitudeCardinal = lng >= 0 ? "E" : "W";
+
+    var wawa = (latitude + '"' + latitudeCardinal + "+" + longitude + '"' + longitudeCardinal);
+    var url = "https://www.google.com/maps/place/"+wawa+"/@"+lat+","+lng+",17z"
+    $("#location_url").val(url);
+  }
+
+</script>
+
+

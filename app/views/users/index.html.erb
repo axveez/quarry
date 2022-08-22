@@ -1,0 +1,50 @@
+
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+    <div class="row card-group-row">
+        <div class="col-lg-12 col-md-12 card-group-row__col">
+            <div class="card card-group-row__card">
+                <div class="card-header card-header-large bg-light d-flex align-items-center">
+                    <div class="flex">
+                        <h4 class="card-header__title">Data User</h4>
+                        <div class="card-subtitle text-muted"><%#= link_to 'Add Record', new_user_path , :class=> "btn btn-primary"%></div>
+                        <p id="notice"><%= notice %></p>
+                    </div>
+                </div>
+                <div class="card-body d-flex align-items-center">
+                  <div class="table-responsive border-bottom">
+                    <table class="table table-sm mb-0 thead-border-top-0" id="table_id">
+                      <thead>
+                        <tr>
+                          <th>Nama</th>
+                          <th>Email</th>
+                          <th>Username</th>
+                          <th>Jenis Akun</th>
+                          <th width="10px">Option</th>
+                        </tr>
+                      </thead>
+                      <tbody class="list" id="staff02">
+                        <% @users.each do |user| %>
+                          <tr>
+                            <td><%= user.full_name %></td>
+                            <td><%= user.email %></td>
+                            <td><%= user.username %></td>
+                            <td><%= user.user_type %></td>
+                            <td>
+                              <div class="btn-group">
+                                <%= link_to 'Edit', edit_user_path(user), :class=> "badge badge-warning m-1" %>
+                                <%= link_to 'Hapus', user, method: :delete, data: { confirm: 'Are you sure?' }, :class=> "badge badge-danger m-1" %>
+                              </div>
+                            </td>
+                          </tr>
+                        <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

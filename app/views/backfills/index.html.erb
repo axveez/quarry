@@ -1,0 +1,109 @@
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+    <div class="row card-group-row">
+        <div class="col-lg-12 col-md-12 card-group-row__col">
+            <div class="card card-group-row__card">
+                <div class="card-header card-header-large bg-light d-flex align-items-center">
+                    <div class="flex">
+                        <h4 class="card-header__title">Data Pengurukan</h4>
+                        <div class="card-subtitle text-muted">
+                          <% case current_user.user_type %>
+                          <% when 'admin','backfill_guard' %>
+                            <%#= link_to 'Add Record', new_backfill_path , :class=> "btn btn-primary"%>
+                          <% end %>
+                        </div>
+                        <p id="notice"><%= notice %></p>
+                    </div>
+                    <div class="dropdown ml-auto">
+                      <input type="date" class="form-control" onfocusout="change_date(this)" value="<%= session[:date] %>">
+                    </div>
+                </div>
+                <div class="card-body d-flex align-items-center">
+                  <div class="table-responsive border-bottom">
+                    <table class="table table-sm mb-0 thead-border-top-0" id="table_id">
+                      <thead>
+                        <tr>
+                          <th>Asset</th>
+                          <th>Driver</th>
+                          <th>Location</th>
+                          <th>Gmaps</th>
+                          <th>Sisa Kargo</th>
+                          <% case current_user.user_type %>
+                          <% when 'admin' %>
+                            <th>Lama Perjalanan</th>
+                          <% end %>
+                          <th>Time in</th>
+                          <th>Time out</th>
+                          <th width="10px">Option</th>
+                        </tr>
+                      </thead>
+                      <tbody class="list" id="staff02">
+                        <% @backfills.each do |backfill| %>
+                          <tr>
+                            <td><%= backfill.asset.police_number if backfill.asset_id.present? and backfill.asset.present?%></td>
+                            <td><%= backfill.driver.full_name if backfill.driver_id.present? and backfill.driver.present?%></td>
+                            <td><%= backfill.location.name if backfill.location_id.present? and backfill.location.present?%></td>
+                            <td><a href="<%= backfill.location.url %>" target="_blank" class="badge badge-primary">Tampilkan di Google Maps</a></td>
+                            <td><%= backfill.cargo_leftover %></td>
+                            <% case current_user.user_type %>
+                            <% when 'admin' %>
+                              <td><%= backfill.time_length %></td>
+                            <% end %>
+                            <td>
+                              <% if backfill.time_in.present? %>
+                                <%= backfill.time_in.strftime("%Y-%m-%d %H:%M:%S") %>
+                              <% else %>
+                                <% case current_user.user_type %>
+                                <% when 'admin','backfill_guard' %>
+                                  <%= link_to 'Armada Masuk', "/#{params[:controller]}?record_id=#{backfill.id}&type=time_in", data: { confirm: 'armada Masuk ke Pengerukan?' }, :class=> "badge badge-info m-1" %>
+                                <% end %>
+                              <% end %>
+                            </td>
+                            <td>
+                              
+                              <% if backfill.time_out.present? %>
+                                <%= backfill.time_out.strftime("%Y-%m-%d %H:%M:%S") %>
+                              <% else %>
+                                <% case current_user.user_type %>
+                                <% when 'admin','backfill_guard' %>
+                                  <%= link_to 'Armada Keluar', "/#{params[:controller]}?record_id=#{backfill.id}&type=time_out", data: { confirm: 'armada Keluar Pengerukan?' }, :class=> "badge badge-secondary m-1" %>
+                                <% end %>
+                              <% end %>
+                              
+                                
+                            </td>
+                            <td>
+                              <% case current_user.user_type %>
+                              <% when 'backfill_guard' %>
+                                <div class="btn-group">
+                                  <%= link_to 'Show', backfill , :class=> "badge badge-success m-1" %>
+                                </div>
+                              <% when 'admin'%>
+                                <div class="btn-group">
+                                  <%= link_to 'Show', backfill , :class=> "badge badge-success m-1" %>
+                                  <%= link_to 'Edit', edit_backfill_path(backfill), :class=> "badge badge-warning m-1" %>
+                                  <%= link_to 'Hapus', backfill, method: :delete, data: { confirm: 'Are you sure?' }, :class=> "badge badge-danger m-1" %>
+                                </div>
+                              <% end %>
+                            </td>
+                          </tr>
+                        <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<script type="text/javascript">
+  function change_date(ini){
+    var datee = (ini.value);
+    window.location.replace("/<%= params[:controller] %>?date="+datee);
+  };
+</script>

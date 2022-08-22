@@ -1,0 +1,75 @@
+
+
+
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+  <div class="row card-form">
+    <div class="col-lg-12 col-md-12 card-group-row__col">
+      <div class="card card-group-row__card">
+        <div class="card-header card-header-large bg-light d-flex align-items-center">
+          <div class="flex">
+            <h4 class="card-header__title">Show Kendaraan</h4>
+            <p id="notice"><%= notice %></p>
+
+          </div>
+        </div>
+        <div class="card-body d-flex align-items-center card-form__body">
+          <%= form_with(model: @asset, local: true) do |form| %>
+          
+          <div class="form-row">
+            <div class="col-12 col-md-6 mb-3">
+              <%= label_tag :police_number %>
+              <%= text_field_tag :police_number , @asset.police_number , :class=>"form-control", :disabled=>true%>
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <%= label_tag :kir_number %>
+              <%= text_field_tag :kir_number, @asset.kir_number , :class=>"form-control", :disabled=>true%>
+            </div>
+          </div>
+          
+
+          <div class="form-group">
+            <%= label_tag :stnk_number %>
+            <%= text_field_tag :stnk_number, @asset.stnk_number , :class=>"form-control", :disabled=>true%>
+          </div>
+
+          <div class="form-group">
+            <%= label_tag :asset_type %>
+            <%= text_field_tag :asset_type, @asset.asset_type , :class=>"form-control", :disabled=>true%>
+          </div>
+
+          <div class="form-group">
+            <%= label_tag :capacity %>
+            <%= text_field_tag :capacity, @asset.capacity , :class=>"form-control", :disabled=>true%>
+          </div>
+
+          <div class="form-group">
+            <%= form.label :tinggi_kargo %>
+            <%= form.text_field :cargo_height, :class=>"form-control" , :disabled=>true%>
+          </div>
+          <div class="form-group">
+            <%= form.label :lebar_kargo %>
+            <%= form.text_field :cargo_width, :class=>"form-control" , :disabled=>true%>
+          </div>
+          <div class="form-group">
+            <%= form.label :panjang_kargo %>
+            <%= form.text_field :cargo_length, :class=>"form-control" , :disabled=>true%>
+          </div>
+
+          <div class="actions">
+            <% case current_user.user_type %>
+            <% when 'admin' %>
+              <%= link_to 'Edit', edit_asset_path(@asset), :class=>"btn btn-primary" %>
+            <% end %>
+            <%= link_to 'Back', assets_path ,:class=>"btn btn-secondary"%>
+          </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+

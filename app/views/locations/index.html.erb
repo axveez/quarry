@@ -1,0 +1,60 @@
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+    <div class="row card-group-row">
+        <div class="col-lg-12 col-md-12 card-group-row__col">
+            <div class="card card-group-row__card">
+                <div class="card-header card-header-large bg-light d-flex align-items-center">
+                    <div class="flex">
+                        <h4 class="card-header__title">Data Lokasi</h4>
+                        <div class="card-subtitle text-muted"><%= link_to 'Add Record', new_location_path , :class=> "btn btn-primary"%></div>
+                        <p id="notice"><%= notice %></p>
+                    </div>
+                </div>
+                <div class="card-body d-flex align-items-center">
+                  <div class="table-responsive border-bottom">
+                    <table class="table table-sm mb-0 thead-border-top-0" id="table_id">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Latitude</th>
+                          <th>Longitude</th>
+                          <th>Gmaps</th>
+
+                          <th>Land area</th>
+                          <th>Iup/OP number</th>
+                          <th>Iup/OPK number</th>
+                          <th width="10px">Option</th>
+                        </tr>
+                      </thead>
+                      <tbody class="list" id="staff02">
+                        <% @locations.each do |location| %>
+                          <tr>
+                            <td><span ><%= location.name %></span></td>
+                            <td><span ><%= location.latitude %></span></td>
+                            <td><span ><%= location.longitude %></span></td>
+                            <td><a href="<%= location.url %>" target="_blank" class="badge badge-primary">Tampilkan di Google Maps</a></td>
+                            <td><%= location.land_area %></td>
+                            <td><%= location.iup_number %></td>
+                            <td><%= location.opk_number %></td>
+                            <td>
+                              <div class="btn-group">
+                                <%= link_to 'Show', location , :class=> "badge badge-success m-1" %>
+                                <% case current_user.user_type %>
+                                <% when 'admin' %>
+                                  <%= link_to 'Edit', edit_location_path(location), :class=> "badge badge-warning m-1" %>
+                                  <%= link_to 'Hapus', location, method: :delete, data: { confirm: 'Are you sure?' }, :class=> "badge badge-danger m-1" %>
+                                <% end %>
+                              </div>
+                            </td>
+                          </tr>
+                        <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

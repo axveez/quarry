@@ -1,0 +1,122 @@
+
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+  <div class="row card-form">
+    <div class="col-lg-12 col-md-12 card-group-row__col">
+      <div class="card card-group-row__card">
+        <div class="card-header card-header-large bg-light d-flex align-items-center">
+          <div class="flex">
+            <h4 class="card-header__title">Form Quarry</h4>
+            <p id="notice"><%= notice %></p>
+
+          </div>
+        </div>
+        <div class="card-body d-flex align-items-center card-form__body">
+          <%= form_with(model: quarry, local: true) do |form| %>
+            <%= form.hidden_field :date , :value => Time.now.strftime('%Y-%m-%d')%>
+            <%= form.hidden_field :time_in , :value => DateTime.now()%>
+            
+            <% if quarry.errors.any? %>
+              <div id="error_explanation">
+                <h2><%= pluralize(quarry.errors.count, "error") %> prohibited this quarry from being saved:</h2>
+
+                <ul>
+                <% quarry.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="form-row">
+              <div class="col-12 col-md-6 mb-3">
+                <%= form.label :nomor_polisi %>
+                <%= select_tag 'asset' ,options_for_select(@fleets.map { |e| ["#{e.asset.police_number} - #{e.driver.full_name}",e.asset.id] },(quarry.asset_id)), :class=>"form-control select2", :disabled=>(true if quarry.asset_id.present?) %>
+                <%= form.hidden_field :asset_id, :value=> quarry.asset_id %>
+              </div>
+
+
+              <div class="col-12 col-md-6 mb-3">
+                <%= form.label :kapasitas %>
+                <input type="text" name="" disabled="disabled" class="form-control capacity" value="<%= quarry.asset.capacity if quarry.asset_id.present? %>">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :nama_supir %>
+              <%= form.hidden_field :driver_id , :class=>"form-control"%>
+              <input type="text" name="" disabled="disabled" class="form-control driver_name" value="<%= quarry.driver.full_name if quarry.driver_id.present? %>">
+            </div>
+
+            <div class="form-group">
+              <%= form.label :lokasi %>
+              <%= select_tag 'lokasi' ,options_for_select(@locations.map { |e| ["#{e.name}",e.id] },(quarry.location_id)), :class=>"form-control select2", :disabled=>(true if quarry.location_id.present?) %>
+              <%= form.hidden_field :location_id, :value=> quarry.location_id %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label "Luas Lahan (HA)" %>
+              <input type="text" name="" disabled="disabled" class="form-control land_area" value="<%= @quarry.location.land_area if @quarry.location_id.present? %>">
+            </div>
+
+            <div class="form-group">
+              <%= form.label "nomor iup / op" %>
+              <input type="text" name="" disabled="disabled" class="form-control iup_number" value="<%= @quarry.location.iup_number if @quarry.location_id.present? %>">
+            </div>
+
+            <div class="form-group">
+              <%= form.label "nomor iup / opk" %>
+              <input type="text" name="" disabled="disabled" class="form-control opk_number" value="<%= @quarry.location.opk_number if @quarry.location_id.present? %>">
+            </div>
+
+            <div class="form-group">
+              <%= form.label "Sisa Kargo" %>
+              <%= form.number_field :cargo_leftover, :class=>"form-control" , :min=>0, :step=>"any", :required=>true%>
+            </div>
+
+            <div class="form-group">
+              <%= form.label "Time Out" %>
+              <input class="form-control" readonly="readonly" type="text" value="<%= DateTime.now() %>" name="quarry[time_out]" id="quarry_time_out" >
+              <%#= form.text_field :time_out,DateTime.now(), :class=>"form-control",:disabled=>true%>
+            </div>
+
+            <div class="row">
+              <div class="col-6">
+                Gambar dari Depan<br>
+                <% image = @gallery.find_by(:type_photo=>'front').base64 if  @gallery.present? and @gallery.where(:type_photo=>'front').present? %>
+                <% if image.blank? %>
+                  <small style="font-weight: bold;">Belum upload gambar depan</small>
+                <% end %> 
+                <img id="review_image_1" src="<%= image %>" width="300">
+              </div>
+              <div class="col-6">
+                Gambar dari belakang<br>
+                <% image = @gallery.find_by(:type_photo=>'back').base64 if @gallery.present? and  @gallery.where(:type_photo=>'back').present? %>
+                <% if image.blank? %>
+                  <small style="font-weight: bold;">Belum upload gambar belakang</small>
+                <% end %> 
+                <img id="review_image_2" src="<%= image %>" width="300">
+              </div>
+            </div>
+
+            <br>
+
+            <div class="form-group">
+              <%= form.submit "Save", :class=>"btn btn-primary" %>
+              <%= link_to 'Back', quarries_path ,:class=>"btn btn-secondary"%>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function change_asset(wawa){
+    $('.capacity').val($(wawa).find(':selected').attr('capacity'))
+    $('#quarry_driver_id').val($(wawa).find(':selected').attr('driver_id'))
+    $('.driver_name').val($(wawa).find(':selected').attr('driver_name'))
+  }
+</script>

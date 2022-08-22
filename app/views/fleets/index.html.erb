@@ -1,0 +1,99 @@
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+    <div class="row card-group-row">
+        <div class="col-lg-12 col-md-12 card-group-row__col">
+            <div class="card card-group-row__card">
+                <div class="card-header card-header-large bg-light d-flex align-items-center">
+                    <div class="flex">
+                        <h4 class="card-header__title">Data Armada</h4>
+                        <div class="card-subtitle text-muted">
+                          <% case current_user.user_type %>
+                          <% when 'admin','fleet_guard' %>
+                            <%= link_to 'Add Record', new_fleet_path , :class=> "btn btn-primary"%>
+                          <% end %>
+                        </div>
+                        <p id="notice"><%= notice %></p>
+                    </div>
+                    <div class="dropdown ml-auto">
+                      <!-- <input type="date" class="form-control" onfocusout="change_date(this)" value="<%#= session[:date] %>"> -->
+                    </div>
+                </div>
+                <div class="card-body d-flex align-items-center">
+                  <div class="table-responsive border-bottom">
+                    <table class="table table-sm mb-0 thead-border-top-0" id="table_id">
+                      <thead>
+                        <tr>
+                          <th>Asset</th>
+                          <th>Driver</th>
+                          <th>Date</th>
+                          <th>Sim check</th>
+                          <th>Ktp check</th>
+                          <th>Stnk check</th>
+                          <th>Kir check</th>
+                          <th>Time in</th>
+                          <th>Time out</th>
+                          <% case current_user.user_type %>
+                          <% when 'admin' %>
+                            <th>Jumlah Putaran</th>
+                          <% end %>
+                          <th width="10px">Option</th>
+                        </tr>
+                      </thead>
+                      <tbody class="list" id="staff02">
+                        <% @fleets.each do |fleet| %>
+                          <tr>
+                            <td><%= fleet.asset.police_number if fleet.asset_id.present? and fleet.asset.present?%></td>
+                            <td><%= fleet.driver.full_name if fleet.driver_id.present? and fleet.driver.present?%></td>
+                            <td><%= fleet.date %></td>
+                            <td><%= fleet.sim_check == "yes" ? "Ada" : "Tidak ada" %></td>
+                            <td><%= fleet.ktp_check == "yes" ? "Ada" : "Tidak ada" %></td>
+                            <td><%= fleet.stnk_check == "yes" ? "Ada" : "Tidak ada" %></td>
+                            <td><%= fleet.kir_check == "yes" ? "Ada" : "Tidak ada" %></td>
+                            <td>
+                              <% if fleet.time_in.present? %>
+                                <%= fleet.time_in.strftime("%Y-%m-%d %H:%M:%S") %>
+                              <% else %>
+                                <% case current_user.user_type %>
+                                <% when 'admin','fleet_guard' %>
+                                    <%= link_to 'Armada Masuk', "/#{params[:controller]}?record_id=#{fleet.id}", data: { confirm: 'armada Kembali?' }, :class=> "badge badge-secondary m-1" %>
+                                <% end %>
+                              <% end %>
+                            </td>
+                            <td><%= fleet.time_out.strftime("%Y-%m-%d %H:%M:%S") %></td>
+                            <% case current_user.user_type %>
+                            <% when 'admin' %>
+                              <td><%= fleet.count_turn %></td>
+                            <% end %>
+                            <td>
+                              <% case current_user.user_type %>
+                              <% when 'fleet_guard' %>
+                                <div class="btn-group">
+                                  <%= link_to 'Show', fleet , :class=> "badge badge-success m-1" %>
+                                </div>
+                              <% when 'admin' %>
+                                <div class="btn-group">
+                                  <%= link_to 'Show', fleet , :class=> "badge badge-success m-1" %>
+                                  <%= link_to 'Edit', edit_fleet_path(fleet), :class=> "badge badge-warning m-1" %>
+                                  <%= link_to 'Hapus', fleet, method: :delete, data: { confirm: 'Are you sure?' }, :class=> "badge badge-danger m-1" %>
+                                </div>
+                              <% end %>
+                            </td>
+                          </tr>
+                        <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+  function change_date(ini){
+    var datee = (ini.value);
+    window.location.replace("/<%= params[:controller] %>?date="+datee);
+  };
+</script>

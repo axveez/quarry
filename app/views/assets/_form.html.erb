@@ -1,0 +1,78 @@
+
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+    <div class="row card-form">
+        <div class="col-lg-12 col-md-12 card-group-row__col">
+            <div class="card card-group-row__card">
+                <div class="card-header card-header-large bg-light d-flex align-items-center">
+                    <div class="flex">
+                        <h4 class="card-header__title">Form Kendaraan</h4>
+                    </div>
+                </div>
+                <div class="card-body d-flex align-items-center card-form__body">
+                  <%= form_with(model: asset, local: true) do |form| %>
+                    <% if asset.errors.any? %>
+                      <div id="error_explanation">
+                        <h2><%= pluralize(asset.errors.count, "error") %> prohibited this asset from being saved:</h2>
+
+                        <ul>
+                        <% asset.errors.full_messages.each do |message| %>
+                          <li><%= message %></li>
+                        <% end %>
+                        </ul>
+                      </div>
+                    <% end %>
+                    <div class="form-row">
+                      <div class="col-12 col-md-6 mb-3">
+                        <%= form.label :nomor_polisi %>
+                        <%= form.text_field :police_number , :class=>"form-control"%>
+                      </div>
+
+                      <div class="col-12 col-md-6 mb-3">
+                        <%= form.label :nomor_kir %>
+                        <%= form.text_field :kir_number, :class=>"form-control"%>
+                      </div>
+                    </div>
+                    
+
+                    <div class="form-group">
+                      <%= form.label :nomor_stnk %>
+                      <%= form.text_field :stnk_number, :class=>"form-control"%>
+                    </div>
+
+                    <div class="form-group">
+                      <%= form.label :jenis_asset %>
+                      <%= form.text_field :asset_type, :class=>"form-control"%>
+                    </div>
+
+                    <div class="form-group">
+                      <%= form.label :kapasitas_kargo %>
+                      <%= form.text_field :capacity, :class=>"form-control"%>
+                    </div>
+                    
+                    <div class="form-group">
+                      <%= form.label :tinggi_kargo %>
+                      <%= form.text_field :cargo_height, :class=>"form-control"%>
+                    </div>
+                    <div class="form-group">
+                      <%= form.label :lebar_kargo %>
+                      <%= form.text_field :cargo_width, :class=>"form-control"%>
+                    </div>
+                    <div class="form-group">
+                      <%= form.label :panjang_kargo %>
+                      <%= form.text_field :cargo_length, :class=>"form-control"%>
+                    </div>
+
+                    <div class="actions">
+                      <%= form.submit "Save", :class=>"btn btn-primary" %>
+                      <%= link_to 'Back', assets_path ,:class=>"btn btn-secondary"%>
+                    </div>
+                  <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

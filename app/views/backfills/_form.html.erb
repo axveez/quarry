@@ -1,0 +1,78 @@
+
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+  <div class="row card-form">
+    <div class="col-lg-12 col-md-12 card-group-row__col">
+      <div class="card card-group-row__card">
+        <div class="card-header card-header-large bg-light d-flex align-items-center">
+          <div class="flex">
+            <h4 class="card-header__title">Form Pengerukan</h4>
+            <p id="notice"><%= notice %></p>
+
+          </div>
+        </div>
+        <div class="card-body d-flex align-items-center card-form__body">
+          <%= form_with(model: backfill, local: true) do |form| %>
+            <%= form.hidden_field :date , :value => Time.now.strftime('%Y-%m-%d')%>
+            <%= form.hidden_field :time_in , :value => DateTime.now()%>
+            
+              <% if backfill.errors.any? %>
+                <div id="error_explanation">
+                  <h2><%= pluralize(backfill.errors.count, "error") %> prohibited this backfill from being saved:</h2>
+
+                  <ul>
+                  <% backfill.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                  </ul>
+                </div>
+              <% end %>
+
+            <div class="form-row">
+              <div class="col-12 col-md-6 mb-3">
+                <%= form.label :nomor_polisi %>
+                <%= form.select :asset_id ,options_for_select(@fleets.map { |e| ["#{e.asset.police_number} - #{e.driver.full_name}",e.asset.id,{:'capacity'=>e.asset.capacity,:'driver_id'=>e.driver_id,:'driver_name'=>e.driver.full_name}] },(backfill.asset_id)), {:include_blank=> '-- Pilih --'}, :required=>true, :class=>"form-control select2", :onchange=>"change_asset(this)" , :disabled=>(true if backfill.asset_id.present?) %>
+              </div>
+
+
+              <div class="col-12 col-md-6 mb-3">
+                <%= form.label :kapasitas %>
+                <input type="text" name="" disabled="disabled" class="form-control capacity" value="<%= backfill.asset.capacity if backfill.asset_id.present? %>">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :nama_supir %>
+              <%= form.hidden_field :driver_id , :class=>"form-control"%>
+              <input type="text" name="" disabled="disabled" class="form-control driver_name" value="<%= backfill.driver.full_name if backfill.driver_id.present? %>">
+            </div>
+
+            <div class="form-group">
+              <%= form.label :lokasi %>
+              <%= form.select :location_id ,options_for_select(@locations.map { |e| ["#{e.name}",e.id] },(backfill.location_id)), {:include_blank=> '-- Pilih --'}, :required=>true, :class=>"form-control select2" %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label "sisa_kargo_(m)" %>
+              <%= form.number_field :cargo_leftover, :step=>"any", :min=>0 , :class=>"form-control"%>
+            </div>
+
+            <div class="form-group">
+              <%= form.submit "Save", :class=>"btn btn-primary" %>
+              <%= link_to 'Back', backfills_path ,:class=>"btn btn-secondary"%>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function change_asset(wawa){
+    $('.capacity').val($(wawa).find(':selected').attr('capacity'))
+    $('#backfill_driver_id').val($(wawa).find(':selected').attr('driver_id'))
+    $('.driver_name').val($(wawa).find(':selected').attr('driver_name'))
+  }
+</script>

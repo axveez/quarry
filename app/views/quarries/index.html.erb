@@ -1,0 +1,120 @@
+
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+    <div class="row card-group-row">
+        <div class="col-lg-12 col-md-12 card-group-row__col">
+            <div class="card card-group-row__card">
+                <div class="card-header card-header-large bg-light d-flex align-items-center">
+                    <div class="flex">
+                        <h4 class="card-header__title">Data Quarry</h4>
+                        <div class="card-subtitle text-muted">
+                          <% case current_user.user_type %>
+                          <% when 'admin','quarry_guard' %>
+                            <%= link_to 'Add Record', new_quarry_path , :class=> "btn btn-primary"%>
+                          <% end %>
+                        </div>
+                        <p id="notice"><%= notice %></p>
+                    </div>
+                    <div class="dropdown ml-auto">
+                      <input type="date" class="form-control" onfocusout="change_date(this)" value="<%= session[:date] %>">
+                    </div>
+                </div>
+                <div class="card-body d-flex align-items-center">
+                  <div class="table-responsive border-bottom">
+                    <table class="table table-sm mb-0 thead-border-top-0" id="table_id">
+                      <thead>
+                        <tr>
+                          <th>Asset</th>
+                          <th>Driver</th>
+                          <th>Location</th>
+                          <th>Gmaps</th>
+                          <th>Land area</th>
+                          <th>Sisa Kargo</th>
+                          <th>Time in</th>
+                          <th>Time out</th>
+                          <th>Image</th>
+                          <th width="10px">Option</th>
+                        </tr>
+                      </thead>
+                      <tbody class="list" id="staff02">
+                        <% @quarries.each do |quarry| %>
+                          <% if quarry.imageupload.to_i == 2 %>
+                            <% disable = false %>
+                          <% else %>
+                            <% disable = true %>
+                          <% end %>
+
+                          <tr>
+                            <td><%= quarry.asset.police_number if quarry.asset_id.present? and quarry.asset.present?%></td>
+                            <td><%= quarry.driver.full_name if quarry.driver_id.present? and quarry.driver.present?%></td>
+                            <td><%= quarry.location.name if quarry.location_id.present? and quarry.location.present?%></td>
+                            <td><a href="<%= quarry.location.url %>" target="_blank" class="badge badge-primary">Tampilkan di Google Maps</a></td>
+                            <td><%= quarry.location.land_area if quarry.location_id.present? %></td>
+                            <td><%= quarry.cargo_leftover %></td>
+                            <td><%= quarry.time_in.strftime("%Y-%m-%d %H:%M:%S") %></td>
+                            <td>
+                              
+                              <% if quarry.time_out.present? %>
+                                <%= quarry.time_out.strftime("%Y-%m-%d %H:%M:%S") %>
+                              <% else %>
+                                <% case current_user.user_type %>
+                                <% when 'admin','quarry_guard' %>
+                                  <%#= link_to 'Time out', "/#{params[:controller]}?record_id=#{quarry.id}", data: { confirm: 'armada Keluar Quarry?' }, :class=> "badge badge-secondary m-1" %>
+                                  <% if !disable %>
+                                    <%= link_to 'Armada Keluar', "/#{params[:controller]}/#{quarry.id}/time_out", :disable=>disable, :class=> "badge badge-secondary m-1" %>
+                                  <% end %>
+                                <% end %>
+                              <% end %>
+                                
+                            </td>
+                            <td>
+                              
+                                <% case current_user.user_type %>
+                                <% when 'admin' %>
+
+                                  <%= link_to 'Upload Image', "/#{params[:controller]}/#{quarry.id}/upload", :class=> "badge badge-info m-1" %>
+
+                                <% when 'quarry_guard' %>
+                                  <%  if quarry.time_out.blank?  %>
+                                    <%= link_to 'Upload Image', "/#{params[:controller]}/#{quarry.id}/upload", :class=> "badge badge-info m-1" %>
+                                  <% end %>
+                                <% end %>
+                                
+                            </td>
+                            <td>
+                              <% case current_user.user_type %>
+                              <% when 'quarry_guard' %>
+                                <div class="btn-group">
+                                  <%= link_to 'Show', quarry , :class=> "badge badge-success m-1" %>
+                                </div>
+                              <% when 'admin' %>
+                                <div class="btn-group">
+                                  <%= link_to 'Show', quarry , :class=> "badge badge-success m-1" %>
+                                  <%= link_to 'Edit', edit_quarry_path(quarry), :class=> "badge badge-warning m-1" %>
+                                  <%= link_to 'Hapus', quarry, method: :delete, data: { confirm: 'Are you sure?' }, :class=> "badge badge-danger m-1" %>
+                                </div>
+                              <% end %>
+                            </td>
+                          </tr>
+                        <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Button trigger modal -->
+
+</div>
+
+<script type="text/javascript">
+
+  function change_date(ini){
+    var datee = (ini.value);
+    window.location.replace("/<%= params[:controller] %>?date="+datee);
+  };
+</script>
+

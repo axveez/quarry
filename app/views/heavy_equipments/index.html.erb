@@ -1,0 +1,58 @@
+
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+    <div class="row card-group-row">
+        <div class="col-lg-12 col-md-12 card-group-row__col">
+            <div class="card card-group-row__card">
+                <div class="card-header card-header-large bg-light d-flex align-items-center">
+                    <div class="flex">
+                        <h4 class="card-header__title">Data Alat Berat</h4>
+                        <div class="card-subtitle text-muted"><%= link_to 'Add Record', new_heavy_equipment_path , :class=> "btn btn-primary"%></div>
+                        <p id="notice"><%= notice %></p>
+                    </div>
+                </div>
+                <div class="card-body d-flex align-items-center">
+                  <div class="table-responsive border-bottom">
+                    <table class="table table-sm mb-0 thead-border-top-0" id="table_id">
+                      <thead>
+                        <tr>
+                          <th>Machine name</th>
+                          <th>Stnk number</th>
+                          <th>Sio number</th>
+                          <th>Location</th>
+                          <th width="10px">Option</th>
+                        </tr>
+                      </thead>
+                      <tbody class="list" id="staff02">
+                        <% @heavy_equipments.each do |heavy_equipment| %>
+                          <tr>
+                            <td><%= heavy_equipment.machine_name %></td>
+                            <td><%= heavy_equipment.stnk_number %></td>
+                            <td><%= heavy_equipment.sio_number %></td>
+                            <td><%= heavy_equipment.location.name if heavy_equipment.location_id.present? and heavy_equipment.location.present?%></td>
+                            <td>
+                              <div class="dropdown ml-auto">
+                                <a href="#" data-toggle="dropdown" data-caret="false" class="text-dark-gray"><i class="material-icons">more_horiz</i></a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                  <%= link_to 'Show', heavy_equipment , :class=> "dropdown-item" %>
+                                  <% case current_user.user_type %>
+                                  <% when 'admin' %>
+                                    <%= link_to 'Edit', edit_heavy_equipment_path(heavy_equipment), :class=> "dropdown-item" %>
+                                    <div class="dropdown-divider"></div>
+                                    <%= link_to 'Destroy', heavy_equipment, method: :delete, data: { confirm: 'Are you sure?' }, :class=> "dropdown-item" %>
+                                  <% end %>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

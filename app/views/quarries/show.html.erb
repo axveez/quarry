@@ -1,0 +1,69 @@
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+  <div class="row card-form">
+    <div class="col-lg-12 col-md-12 card-group-row__col">
+      <div class="card card-group-row__card">
+        <div class="card-header card-header-large bg-light d-flex align-items-center">
+          <div class="flex">
+            <h4 class="card-header__title">Show Quarry</h4>
+            <p id="notice"><%= notice %></p>
+
+          </div>
+        </div>
+        <div class="card-body d-flex align-items-center card-form__body">
+          <%= form_with(model: @quarry, local: true) do |form| %>
+
+            <div class="form-row">
+              <div class="col-12 col-md-6 mb-3">
+                <%= form.label :nomor_polisi %>
+                <%= form.select :asset_id ,options_for_select(@fleets.map { |e| ["#{e.asset.police_number} - #{e.driver.full_name}",e.asset.id,{:'capacity'=>e.asset.capacity,:'driver_id'=>e.driver_id,:'driver_name'=>e.driver.full_name}] },(@quarry.asset_id)), {:include_blank=> '-- Pilih --'}, :required=>true, :class=>"form-control select2", :onchange=>"change_asset(this)" , :disabled=>(true if @quarry.asset_id.present?) %>
+              </div>
+
+
+              <div class="col-12 col-md-6 mb-3">
+                <%= form.label :kapasitas %>
+                <input type="text" name="" disabled="disabled" class="form-control capacity" value="<%= @quarry.asset.capacity if @quarry.asset_id.present? %>">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :nama_supir %>
+              <%= form.hidden_field :driver_id , :class=>"form-control"%>
+              <input type="text" name="" disabled="disabled" class="form-control driver_name" value="<%= @quarry.driver.full_name if @quarry.driver_id.present? %>">
+            </div>
+
+            <div class="form-group">
+              <%= form.label :lokasi %>
+              <%= form.select :location_id ,options_for_select(@locations.map { |e| ["#{e.name}",e.id] },(@quarry.location_id)), {:include_blank=> '-- Pilih --'}, :required=>true, :class=>"form-control select2", :disabled=>true %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label "Luas Lahan (HA)" %>
+              <input type="text" name="" disabled="disabled" class="form-control land_area" value="<%= @quarry.location.land_area if @quarry.location_id.present? %>">
+            </div>
+
+            <div class="form-group">
+              <%= form.label "nomor iup / op" %>
+              <input type="text" name="" disabled="disabled" class="form-control iup_number" value="<%= @quarry.location.iup_number if @quarry.location_id.present? %>">
+            </div>
+
+            <div class="form-group">
+              <%= form.label "nomor iup / opk" %>
+              <input type="text" name="" disabled="disabled" class="form-control opk_number" value="<%= @quarry.location.opk_number if @quarry.location_id.present? %>">
+            </div>
+
+
+            <div class="form-group">
+              <% case current_user.user_type %>
+              <% when 'admin' %>
+                <%= link_to 'Edit', edit_quarry_path(@quarry), :class=>"btn btn-primary" %>
+              <% end %>
+              <%= link_to 'Back', quarries_path ,:class=>"btn btn-secondary"%>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

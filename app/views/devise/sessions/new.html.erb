@@ -1,0 +1,54 @@
+
+  <div class="layout-login-centered-boxed__form">
+        <div class="d-flex flex-column justify-content-center align-items-center mt-2 mb-2 navbar-light">
+            <a href="index.html" class="navbar-brand text-center mb-2 mr-0" style="min-width: 0">
+                <img class="navbar-brand-icon" src="<%=image_path('logo.svg') %>" width="43" alt="Flat">
+                <span>SIGN IN</span>
+            </a>
+        </div>
+
+        <div class="card card-body">
+
+
+
+            <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+                <div class="form-group">
+                    <label class="text-label" for="username">Username or Email:</label>
+                    <div class="input-group input-group-merge">
+                        <input id="username" type="text" required="" class="form-control form-control-prepended" placeholder="john@doe.com" name="user[login]">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <span class="far fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="text-label" for="password_2">Password:</label>
+                    <div class="input-group input-group-merge">
+                        <input id="password_2" type="password" required="" class="form-control form-control-prepended" placeholder="Enter your password" name="user[password]">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <span class="fa fa-key"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-block btn-primary" type="submit">Login</button>
+                </div>
+                <div class="form-group text-center">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" checked="" id="remember" name="user[remember_me]">
+                        <label class="custom-control-label" for="remember">Remember me for 30 days</label>
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <a href="">Forgot password?</a> <br>
+                    Don't have an account? <a class="text-body text-underline" href="/users/sign_up">Sign up!</a>
+                </div>
+            <% end %>
+        </div>
+    </div>
+
+<%##= render "devise/shared/links" %>

@@ -1,0 +1,82 @@
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+  <div class="row card-form">
+    <div class="col-lg-12 col-md-12 card-group-row__col">
+      <div class="card card-group-row__card">
+        <div class="card-header card-header-large bg-light d-flex align-items-center">
+          <div class="flex">
+            <h4 class="card-header__title">Form Armada</h4>
+            <p id="notice"><%= notice %></p>
+
+          </div>
+        </div>
+        <div class="card-body d-flex align-items-center card-form__body">
+          <%= form_with(model: fleet, local: true) do |form| %>
+            <%= form.hidden_field :date , :value => Time.now.strftime('%Y-%m-%d')%>
+            <%= form.hidden_field :time_out , :value => DateTime.now()%>
+            
+            <% if fleet.errors.any? %>
+              <div id="error_explanation">
+                <h2><%= pluralize(fleet.errors.count, "error") %> prohibited this fleet from being saved:</h2>
+
+                <ul>
+                <% fleet.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="form-row">
+              <div class="col-12 col-md-6 mb-3">
+                <%= form.label :asset_id %>
+                <%= form.select :asset_id ,options_for_select(@assets.map { |e| ["#{e.police_number} - #{e.capacity}",e.id,{:'capacity'=>e.capacity}] },(fleet.asset_id)), {:include_blank=> '-- Pilih --'}, :required=>true, :class=>"form-control select2", :onchange=>"$('.capacity').val($(this).find(':selected').attr('capacity'))" , :disabled=>(true if fleet.asset_id.present?) %>
+              </div>
+
+
+              <div class="col-12 col-md-6 mb-3">
+                <%= form.label :kapasitas %>
+                <input type="text" name="" disabled="disabled" class="form-control capacity" value="<%= fleet.asset.capacity if fleet.asset_id.present? %>">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :driver_id %>
+              <%= form.select :driver_id ,options_for_select(@drivers.map { |e| ["#{e.full_name}",e.id] },(fleet.driver_id)), {:include_blank=> '-- Pilih --'}, :required=>true, :class=>"form-control select2" %>
+            </div>
+
+            <div class="form-row">
+              <div class="col-12 col-md-6 mb-3">
+                <%= form.label :sim_check %>
+                <%= form.select :sim_check ,options_for_select([["Ada","yes"],["Tidak Ada","no"]],(fleet.sim_check)), {:include_blank=> '-- Pilih --'}, :required=>true, :class=>"form-control" %>
+              </div>
+
+              <div class="col-12 col-md-6 mb-3">
+                <%= form.label :ktp_check %>
+                <%= form.select :ktp_check, options_for_select([["Ada","yes"],["Tidak Ada","no"]],(fleet.ktp_check)), {:include_blank=> '-- Pilih --'}, :required=>true, :class=>"form-control" %>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="col-12 col-md-6 mb-3">
+                <%= form.label :stnk_check %>
+                <%= form.select :stnk_check, options_for_select([["Ada","yes"],["Tidak Ada","no"]],(fleet.stnk_check)), {:include_blank=> '-- Pilih --'}, :required=>true, :class=>"form-control" %>
+              </div>
+
+              <div class="col-12 col-md-6 mb-3">
+                <%= form.label :kir_check %>
+                <%= form.select :kir_check, options_for_select([["Ada","yes"],["Tidak Ada","no"]],(fleet.kir_check)), {:include_blank=> '-- Pilih --'}, :required=>true, :class=>"form-control" %>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <%= form.submit "Save", :class=>"btn btn-primary" %>
+              <%= link_to 'Back', fleets_path ,:class=>"btn btn-secondary"%>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,94 @@
+
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+  <div class="row card-form">
+    <div class="col-lg-12 col-md-12 card-group-row__col">
+      <div class="card card-group-row__card">
+        <div class="card-header card-header-large bg-light d-flex align-items-center">
+          <div class="flex">
+            <h4 class="card-header__title">Form Quarry</h4>
+            <p id="notice"><%= notice %></p>
+
+          </div>
+        </div>
+        <div class="card-body d-flex align-items-center card-form__body">
+          <%= form_with(model: quarry, local: true, :multipart=>true) do |form| %>
+            <div class="row">
+              <div class="col-6">
+                Photo Armada Dari Depan
+              </div>
+              <div class="col-6">
+                Photo Armada Dari Belakang
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <%= file_field_tag "upload[file1]", accept: "image/*", :class=>'btn btn-default', 
+                :onchange=>"GetFileSize(1);" %>
+              </div>
+              <div class="col-6">
+                <%= file_field_tag "upload[file2]", accept: "image/*", :class=>'btn btn-default', 
+                :onchange=>"GetFileSize(2);" %>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <% image = @gallery.find_by(:type_photo=>'front').base64 if  @gallery.present? and @gallery.where(:type_photo=>'front').present? %>
+                <img id="review_image_1" src="<%= image %>" width="300">
+              </div>
+              <div class="col-6">
+                <% image = @gallery.find_by(:type_photo=>'back').base64 if @gallery.present? and  @gallery.where(:type_photo=>'back').present? %>
+                <img id="review_image_2" src="<%= image %>" width="300">
+              </div>
+            </div>
+            <br>
+            <div class="form-group">
+              <%= form.submit "Save", :class=>"btn btn-primary" %>
+              <%= link_to 'Back', quarries_path ,:class=>"btn btn-secondary"%>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function readURL(input, counter) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+
+      reader.onload = function(e) {
+        $('#review_image_'+counter).attr('src', e.target.result);
+      }
+
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+    function GetFileSize(counter) {
+    var fi = document.getElementById("upload_file"+counter); // GET THE FILE INPUT.
+    // VALIDATE OR CHECK IF ANY FILE IS SELECTED.
+    if (fi.files.length > 0) {
+        // RUN A LOOP TO CHECK EACH SELECTED FILE.
+        for (var i = 0; i <= fi.files.length - 1; i++) {
+
+            var fsize = fi.files.item(i).size;      // THE SIZE OF THE FILE.
+            if (Math.round((fsize / 1024)) > 0 ) {
+              if (Math.round((fsize / 1024)) > 5120 ) {
+                alert("Maksimal 5120 KB");
+                $("#fp"+counter).html("");
+                $("#fp"+counter).value("");
+              } else {
+                $("#fp"+counter).html('<b>' + Math.round((fsize / 1024)) + '</b> KB');
+                 readURL(fi, counter);
+              }
+            } else {
+              $("#fp"+counter).html("");
+              $("#fp"+counter).value("");
+            }
+            
+        }
+    }
+  }
+</script>

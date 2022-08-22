@@ -1,0 +1,105 @@
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+    <div class="row">
+        <div class="col-md">
+            <div class="card card-stats">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="card-header__title flex">Driver sedang Jalan</div>
+                    <%= @driver.where(:status=>"working").count %> <span class="text-muted">&nbsp;/ <%= @driver.count %></span>
+                    <% aa = @driver.where(:status=>"working").count.to_f / @driver.count.to_f * 100%>
+                </div>
+                <div class="position-relative d-flex align-items-start z-0">
+                    <div class="progress flex" style="height: 4px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: <%= aa %>%;" aria-valuenow="<%= aa %>" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <i class="material-icons text-success bg-white position-absolute" style="right: -4px; top: -10px; z-index: 2;"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="card card-stats">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="card-header__title flex">Armada di Quarry</div>
+                    <strong class="text-primary"><%= @quarries.count %></strong>&nbsp;/ <%= @driver.count %>
+                    <% bb = @quarries.count.to_f / @driver.count.to_f * 100%>
+                </div>
+                <div class="progress" style="height: 4px;">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: <%= bb %>%;" aria-valuenow="<%= bb %>" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="card card-stats">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="card-header__title flex">Armada di Pengurukan</div>
+                    <%= @backfills.count %> <span class="text-muted">&nbsp;/ <%= @driver.count %></span>
+                    <% cc = @backfills.count.to_f / @driver.count.to_f * 100%>
+                </div>
+                <div class="progress" style="height: 4px;">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: <%= cc %>%;" aria-valuenow="<%= cc %>" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row card-group-row">
+        <div class="col-lg-12 col-md-12 card-group-row__col">
+            <div class="card card-group-row__card">
+                <div class="card-header card-header-large bg-light d-flex align-items-center">
+                    <div class="flex">
+                        <h4 class="card-header__title">Log Armada</h4>
+                        <div class="card-subtitle text-muted"></div>
+                    </div>
+                    <div class="dropdown ml-auto">
+                      <input type="date" class="form-control" onfocusout="change_date(this)" value="<%= session[:date] %>">
+                    </div>
+                </div>
+                <div class="card-body d-flex align-items-center">
+                  <div class="table-responsive border-bottom">
+                    <table class="table table-sm mb-0 thead-border-top-0" id="table_id">
+                      <thead>
+                        <tr>
+                          <th>Nomor Kendaraan</th>
+                          <th>Jenis Kendaraan</th>
+                          <th>Nama Supir</th>
+                          <th>Aktivitas Terakhir</th>
+                          <% case current_user.user_type %>
+                          <% when 'admin' %>
+                            <th>Jumlah Putaran</th>
+                          <% end %>
+                          <th>Waktu</th>
+                        </tr>
+                      </thead>
+                      <tbody class="list" id="staff02">
+                        <% @logs.each do |record| %>
+                          <tr>
+                            <td>
+                              <span class="badge badge-warning"><%= record.asset.police_number if record.asset_id.present? and record.asset.present? %></span>
+                            </td>
+                            <td><span ><%= record.asset.asset_type if record.asset_id.present? and record.asset.present? %></span></td>
+                            <td><span ><%= record.driver.full_name if record.driver_id.present? and record.driver.present?%></span></td>
+                            <td><span ><%= record.activity %></small></td>
+                            <% case current_user.user_type %>
+                            <% when 'admin' %>
+                              <td><%= record.count_turn %></td>
+                            <% end %>
+                            <td><small><%= record.time.strftime("%Y-%m-%d %H:%M:%S") if record.time.present? %></small></td>
+                          </tr>
+                        <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+  function change_date(ini){
+    var datee = (ini.value);
+    window.location.replace("/?date="+datee);
+  };
+</script>

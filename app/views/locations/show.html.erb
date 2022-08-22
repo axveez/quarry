@@ -1,0 +1,104 @@
+<div class="container-fluid "> 
+  <!-- class : page__container -->
+
+  <div class="row card-form">
+    <div class="col-lg-12 col-md-12 card-group-row__col">
+      <div class="card card-group-row__card">
+        <div class="card-header card-header-large bg-light d-flex align-items-center">
+          <div class="flex">
+            <h4 class="card-header__title">Show Lokasi</h4>
+            <p id="notice"><%= notice %></p>
+
+          </div>
+        </div>
+        <div class="card-body d-flex align-items-center card-form__body">
+          <%= form_with(model: @location, local: true) do |form| %>
+          
+          
+
+          <div class="form-group">
+            <%= label_tag :nama_lokasi %>
+            <%= text_field_tag :name, @location.name , :class=>"form-control", :disabled=>true%>
+          </div>
+
+              <style>
+                /* Set the size of the div element that contains the map */
+                #map {
+                  height: 400px;  /* The height is 400 pixels */
+                  width: 100%;  /* The width is the width of the web page */
+                 }
+              </style>
+            <div class="form-group" id="map"></div>
+
+          <div class="form-row">
+            <div class="col-12 col-md-6 mb-3">
+              <%= label_tag :latitude %>
+              <%= text_field_tag :latitude, @location.latitude , :class=>"form-control", :disabled=>true%>
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <%= label_tag :longitude %>
+              <%= text_field_tag :longitude, @location.longitude , :class=>"form-control", :disabled=>true%>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= label_tag :url_map %>
+            <%= text_field_tag :url, @location.url , :class=>"form-control", :disabled=>true%>
+          </div>
+
+          
+            <div class="form-group">
+              <%= form.label "Luas Lahan (HA)" %>
+              <%= form.text_field :land_area, :class=>"form-control", :required=> true, :disabled=>true %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label "nomor iup / op" %>
+              <%= form.text_field :iup_number, :class=>"form-control", :required=> true, :disabled=>true %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label "nomor iup / opk" %>
+              <%= form.text_field :opk_number, :class=>"form-control", :required=> true, :disabled=>true %>
+            </div>
+
+          <div class="actions">
+            <% case current_user.user_type %>
+            <% when 'admin' %>
+              <%= link_to 'Edit', edit_location_path(@location), :class=>"btn btn-primary" %>
+            <% end %>
+            <%= link_to 'Back', locations_path ,:class=>"btn btn-secondary"%>
+          </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<script>
+  // Initialize and add the map
+  
+  function initMap() {
+   
+    var center = new google.maps.LatLng(<%= @location.latitude %>,<%= @location.longitude %>);
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        center: center,
+        mapTypeId: 'roadmap',
+        draggable: true
+    });
+
+    var myMarker = new google.maps.Marker({
+        position: center,
+        draggable: false,
+        map: map
+    });
+
+  }
+</script>
+

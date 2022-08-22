@@ -1,0 +1,225 @@
+
+    <div class="mdk-drawer  js-mdk-drawer" id="default-drawer" data-align="start">
+        <div class="mdk-drawer__content">
+            <div class="sidebar sidebar-dark sidebar-left simplebar" data-simplebar>
+                <div class="d-flex align-items-center sidebar-p-a border-bottom sidebar-account flex-shrink-0">
+                    <a href="/" class="flex d-flex align-items-center text-underline-0 text-body">
+                        <span class="mr-3">
+                            <img src="<%= image_url('logo.svg') %>" width="43" height="43" alt="avatar">
+                        </span>
+                        <span class="flex d-flex flex-column">
+                            <strong style="font-size: 1.125rem;">QUARRY APP</strong>
+                            <small class="text-muted text-uppercase" style="color: rgba(255,255,255,.54)">Version 1.0</small>
+                        </span>
+                    </a>
+                    <div class="dropdown ml-auto">
+                        <a href="#" data-toggle="dropdown" data-caret="false" class="text-muted"><i class="material-icons">keyboard_arrow_down</i></a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div class="dropdown-item-text dropdown-item-text--lh">
+                                <div><strong><%= current_user.full_name %></strong></div>
+                                <div>@<%= current_user.username %></div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <%= link_to('Logout', destroy_user_session_path,:class=>"dropdown-item", method: :get) %> 
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-stats row no-gutters align-items-center text-center border-bottom flex-shrink-0">
+                    <div class="sidebar-stats__col col">
+                        <div class="sidebar-stats__title">Nama</div>
+                        <div class="sidebar-stats__value"><%= current_user.full_name %></div>
+                    </div>
+                    <div class="sidebar-stats__col col border-left">
+                        <div class="sidebar-stats__title">Status</div>
+                        <div class="sidebar-stats__value"><%= current_user.user_type %></div>
+                    </div>
+                </div>
+
+               <!--  <div class="py-4 text-center flex-shrink-0">
+                    <a style="min-width: 157px;" href="/todo" class="btn btn-primary">To Do List</a>
+                </div> -->
+
+                <ul class="nav nav-tabs sidebar-tabs flex-shrink-0" role="tablist">
+                    <li class="nav-item"><a class="nav-link active show" id="sm-menu-tab" href="#sm-menu" data-toggle="tab" role="tab" aria-controls="sm-menu" aria-selected="true">Menu</a></li>
+                    <!-- <li class="nav-item"><a class="nav-link" href="#sm-account" data-toggle="tab">Account</a></li> -->
+                    <!-- <li class="nav-item"><a class="nav-link" href="#sm-settings" data-toggle="tab">Settings</a></li> -->
+                </ul>
+                <div class="tab-content">
+                    <div id="sm-menu" class="tab-pane show active" role="tabpanel" aria-labelledby="sm-menu-tab">
+                        <ul class="sidebar-menu flex">
+                            <li class="sidebar-menu-item <%= params[:controller] == 'main' ? 'active' : '' %>">
+                                <a class="sidebar-menu-button" href="/">
+                                    <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">dvr</i>
+                                    <span class="sidebar-menu-text">Dashboard</span>
+                                </a>
+                            </li>
+                            <% case params[:controller] %>
+                            <% when "locations","assets","drivers","heavy_equipments" %>
+                              <% menu_satu = "open active" %>
+                              <% menu_dua = "" %>
+                              <% menu_tiga = "" %>
+                            <% when "fleets","quarries","backfills" %>
+                              <% menu_satu = "" %>
+                              <% menu_dua = "open active" %>
+                              <% menu_tiga = "" %>
+                            <% end %>
+
+                            <% case current_user.user_type %>
+                            <% when 'admin','quarry_guard','fleet_guard','backfill_guard','driver','spect' %>
+                              <li class="sidebar-menu-item <%= menu_dua %>">
+                                  <a class="sidebar-menu-button" data-toggle="collapse" href="#shipping_menu">
+                                      <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">local_shipping</i>
+                                      <span class="sidebar-menu-text">Alur Kerja</span>
+                                      <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                                  </a>
+                                  <ul class="sidebar-submenu collapse <%= menu_dua.present? ? 'show' : '' %>" id="shipping_menu">
+                                      <li class="sidebar-menu-item <%= params[:controller] == 'fleets' ? 'active' : '' %>">
+                                          <a class="sidebar-menu-button" href="/fleets">
+                                              <span class="sidebar-menu-text">Armada</span>
+                                          </a>
+                                      </li>
+
+                                      <li class="sidebar-menu-item <%= params[:controller] == 'quarries' ? 'active' : '' %>">
+                                          <a class="sidebar-menu-button" href="/quarries">
+                                              <span class="sidebar-menu-text">Quarry</span>
+                                          </a>
+                                      </li>
+
+                                      <li class="sidebar-menu-item <%= params[:controller] == 'backfills' ? 'active' : '' %>">
+                                          <a class="sidebar-menu-button" href="/backfills">
+                                              <span class="sidebar-menu-text">Pengurukan</span>
+                                          </a>
+                                      </li>
+                                    
+                                  </ul>
+                              </li>
+                            <% end %>
+
+                            <% case current_user.user_type %>
+                            <% when 'admin','quarry_guard','fleet_guard','backfill_guard','spect' %>
+                              <li class="sidebar-menu-item <%= menu_satu %>">
+                                  <a class="sidebar-menu-button" data-toggle="collapse" href="#marketing_menu">
+                                      <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">insert_chart</i>
+                                      <span class="sidebar-menu-text">Master Data</span>
+                                      <!-- <span class="badge badge-warning rounded-circle badge-notifications ml-auto" style="padding: .1875rem .375rem;">8</span> -->
+                                      <!-- <span class="sidebar-menu-toggle-icon"></span> -->
+                                      <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                                  </a>
+                                  <ul class="sidebar-submenu collapse <%= menu_satu.present? ? 'show' : '' %>" id="marketing_menu">
+                                      <li class="sidebar-menu-item <%= params[:controller] == 'assets' ? 'active' : '' %>">
+                                          <a class="sidebar-menu-button" href="/assets">
+                                              <span class="sidebar-menu-text">Kendaraan</span>
+                                          </a>
+                                      </li>
+                                      <li class="sidebar-menu-item <%= params[:controller] == 'drivers' ? 'active' : '' %>">
+                                          <a class="sidebar-menu-button" href="/drivers">
+                                              <span class="sidebar-menu-text">Supir</span>
+                                          </a>
+                                      </li>
+                                      <li class="sidebar-menu-item <%= params[:controller] == 'heavy_equipments' ? 'active' : '' %>">
+                                          <a class="sidebar-menu-button" href="/heavy_equipments">
+                                              <span class="sidebar-menu-text">Alat Berat</span>
+                                          </a>
+                                      </li>
+                                      <li class="sidebar-menu-item <%= params[:controller] == 'locations' ? 'active' : '' %>">
+                                          <a class="sidebar-menu-button" href="/locations">
+                                              <span class="sidebar-menu-text">Lokasi</span>
+                                          </a>
+                                      </li>
+                                  </ul>
+                              </li>
+                            <% end %>
+
+                            <% case current_user.user_type %>
+                            <% when 'admin' %>
+                              <li class="sidebar-menu-item <%= params[:controller] == 'users' ? 'active' : '' %>">
+                                  <a class="sidebar-menu-button" href="/user_management">
+                                      <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">supervisor_account</i>
+                                      <span class="sidebar-menu-text">User Management</span>
+                                  </a>
+                              </li>
+                            <% end %>
+                            
+                            <% case current_user.user_type %>
+                            <% when 'admin','spect' %>
+                              <li class="sidebar-menu-item <%= params[:controller] == 'galleries' ? 'active' : '' %>">
+                                  <a class="sidebar-menu-button" href="/galleries">
+                                      <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">photo_library</i>
+                                      <span class="sidebar-menu-text">Gallery</span>
+                                  </a>
+                              </li>
+                            <% end %>
+
+                        </ul>
+                    </div>
+                    <div id="sm-account" class="tab-pane">
+                        <ul class="sidebar-menu">
+                            <li class="sidebar-menu-item">
+                                <a class="sidebar-menu-button" href="edit-account.html">
+                                    <span class="sidebar-menu-text">Edit Account</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item">
+                              <%= link_to('<span class="sidebar-menu-text">Logout</span>'.html_safe , destroy_user_session_path,:class=>"sidebar-menu-button", method: :delete) %> 
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="sm-settings" class="tab-pane sidebar-p-a">
+                        <div class="form-inline form-group">
+                            <label for="currency" class="text-label flex justify-content-start">Currency</label>
+                            <select name="currency" id="currency" class="custom-select">
+                                <option selected="true" value="usd">USD</option>
+                                <option value="eur">EUR</option>
+                                <option value="gbp">GBP</option>
+                            </select>
+                        </div>
+                        <div class="form-inline form-group">
+                            <label for="show_tags" class="text-label flex justify-content-start">Show Tags</label>
+                            <label for="show_tags">Yes</label>
+                            <div class="custom-control custom-checkbox-toggle custom-control-inline ml-2 mr-0">
+                                <input checked="" type="checkbox" id="show_tags" class="custom-control-input">
+                                <label class="custom-control-label" for="show_tags">Yes</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="api_token" class="text-label flex justify-content-start">API Token</label>
+                            <div class="input-group input-group-merge">
+                                <input id="api_token" type="password" required="" class="form-control form-control-appended" placeholder="Enter your token">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fa fa-eye"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="api_secret" class="text-label flex justify-content-start">API Secret</label>
+                            <div class="input-group input-group-merge">
+                                <input id="api_secret" type="password" required="" class="form-control form-control-appended" placeholder="Enter your secret">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fa fa-eye"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="price_range" class="text-label flex justify-content-start">Price Range</label>
+                            <input id="price_range" type="text" data-toggle="ion-rangeslider" data-min="0" data-max="100" data-from="50" data-step="5" data-max-postfix="+" data-prefix="$">
+                        </div>
+                        <div>
+                            <label for="category" class="text-label flex justify-content-start">Default Category</label>
+                            <select name="category" id="category" class="custom-select">
+                                <option selected="true" value="admin">Admin Dashboard</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-auto sidebar-p-a sidebar-b-t d-flex flex-column flex-shrink-0">
+                  <%= link_to('Logout <i class="sidebar-menu-icon ml-2 material-icons icon-16pt">exit_to_app</i>'.html_safe , destroy_user_session_path,:class=>"sidebar-link", method: :get) %> 
+                </div>
+
+            </div>
+        </div>
+    </div>
